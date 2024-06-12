@@ -1,3 +1,5 @@
+const { checkOutputName } = require('../utils');
+
 /**
  * @typedef {Object} IndicatorInput
  * @property {string} name Input name
@@ -122,7 +124,11 @@ module.exports = class PineIndicator {
         throw new Error(`Input '${input.name}' (${propI}) must be a ${types[input.type]} !`);
       }
 
-      if (input.options && !input.options.includes(value)) {
+      if (input.type === 'source' && !input.options.includes(value) && !checkOutputName(value)) {
+        throw new Error(`Input '${input.name}' (${propI}) must be one of these values:`, input.options);
+      }
+
+      if (input.options && !input.options.includes(value) && input.type !== 'source') {
         throw new Error(`Input '${input.name}' (${propI}) must be one of these values:`, input.options);
       }
 
